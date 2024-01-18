@@ -27,7 +27,7 @@ export class UserService {
     const isMatch = bcrypt.compare(password, thisUser.password);
     if (!isMatch) throw new ForbiddenException('비밀번호가 맞지 않음');
 
-    const payload = { userId: thisUser.userId };
+    const payload = { userId: thisUser.userId, username };
     const accessToken = await this.createAccess(payload);
     const refreshToken = await this.createRefresh(payload);
 
@@ -58,9 +58,7 @@ export class UserService {
   }
 
   async deleteAcc(token: string) {
-    console.log(token);
     const user = await this.validateAccess(token);
-    console.log(user);
 
     await this.userEntity.delete({ userId: user.userId });
   }

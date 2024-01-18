@@ -3,6 +3,7 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { configDotenv } from 'dotenv';
+import { PostModule } from './post/post.module';
 
 configDotenv();
 
@@ -30,6 +31,7 @@ configDotenv();
       },
     }),
     UserModule,
+    PostModule,
   ],
   controllers: [],
   providers: [],
