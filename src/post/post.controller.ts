@@ -7,6 +7,17 @@ import { UpdatePostDto } from './dto/updatePost.dto';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
+  @Get('/search/keyword/:keyword')
+  async searchByKeyword(@Param('keyword') keyword: string) {
+    const posts = await this.postService.searchByKeyword(keyword);
+
+    return Object.assign({
+      statusCode: 200,
+      message: '조회에 성공했습니다',
+      posts,
+    });
+  }
+
   @Get('/search/tag/:tag')
   async searchByTag(@Param('tag') tag: string) {
     const posts = await this.postService.searchByTag(tag);

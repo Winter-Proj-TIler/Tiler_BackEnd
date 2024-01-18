@@ -13,6 +13,12 @@ export class PostService {
     private readonly userService: UserService,
   ) {}
 
+  async searchByKeyword(keyword: string) {
+    const posts = await this.postEntity.find({ where: [{ title: Like(`%${keyword}%`) }, { contents: Like(`%${keyword}%`) }] });
+
+    return posts;
+  }
+
   async searchByTag(tag: string) {
     const posts = await this.postEntity.find({ where: { tags: Like(`%,${tag},%`) } });
 
