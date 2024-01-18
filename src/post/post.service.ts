@@ -67,4 +67,14 @@ export class PostService {
       tags: ',' + tags.join(',') + ',', // 태그로 검색시 구별하기 위해 구분자로 구분
     });
   }
+
+  async deletePost(postId: number, token: string) {
+    const decoded = await this.userService.validateAccess(token);
+    const thisPost = await this.postEntity.findOneBy({ postId });
+
+    if (!thisPost) throw new NotFoundException('찾을 수 없는 게시물');
+    if (thisPost.userId !== decoded.userId) throw new ForbiddenException('권한 없는 유저');
+
+    await this.postEntity.delete({ postId });
+  }
 }

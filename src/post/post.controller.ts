@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
@@ -35,6 +35,16 @@ export class PostController {
     return Object.assign({
       statusCode: 200,
       message: '수정에 성공했습니다',
+    });
+  }
+
+  @Delete('/:postId')
+  async deletePost(@Param('postId') postId: number, @Headers('Authorization') token: string) {
+    await this.postService.deletePost(postId, token);
+
+    return Object.assign({
+      statusCode: 204,
+      message: '',
     });
   }
 }
