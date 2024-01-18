@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
 import { UserService } from 'src/user/user.service';
 import { CreatePostDto } from './dto/createPost.dto';
@@ -12,6 +12,12 @@ export class PostService {
     @InjectRepository(Post) private postEntity: Repository<Post>,
     private readonly userService: UserService,
   ) {}
+
+  async searchByTag(tag: string) {
+    const posts = await this.postEntity.find({ where: { tags: Like(`%,${tag},%`) } });
+
+    return posts;
+  }
 
   async createPost(token: string, postDto: CreatePostDto) {
     const { contents, tags, title } = postDto;

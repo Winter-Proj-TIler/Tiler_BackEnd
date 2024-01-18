@@ -7,6 +7,17 @@ import { UpdatePostDto } from './dto/updatePost.dto';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
+  @Get('/search/tag/:tag')
+  async searchByTag(@Param('tag') tag: string) {
+    const posts = await this.postService.searchByTag(tag);
+
+    return {
+      statusCode: 200,
+      message: '조회 성공',
+      posts,
+    };
+  }
+
   @Post('/')
   async createPost(@Headers('Authorization') token: string, @Body() createPostDto: CreatePostDto) {
     await this.postService.createPost(token, createPostDto);
