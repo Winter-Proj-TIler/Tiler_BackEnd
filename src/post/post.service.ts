@@ -13,14 +13,16 @@ export class PostService {
     private readonly userService: UserService,
   ) {}
 
-  async searchByKeyword(keyword: string) {
+  async searchByKeyword(keyword: string, sort: string) {
     const posts = await this.postEntity.find({ where: [{ title: Like(`%${keyword}%`) }, { contents: Like(`%${keyword}%`) }] });
+    if (sort == 'DESC') posts.reverse();
 
     return posts;
   }
 
-  async searchByTag(tag: string) {
+  async searchByTag(tag: string, sort: string) {
     const posts = await this.postEntity.find({ where: { tags: Like(`%,${tag},%`) } });
+    if (sort == 'DESC') posts.reverse();
 
     return posts;
   }

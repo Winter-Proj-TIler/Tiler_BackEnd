@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Headers, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
@@ -7,9 +7,9 @@ import { UpdatePostDto } from './dto/updatePost.dto';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  @Get('/search/keyword/:keyword')
-  async searchByKeyword(@Param('keyword') keyword: string) {
-    const posts = await this.postService.searchByKeyword(keyword);
+  @Get('/search/keyword/:sort')
+  async searchByKeyword(@Query('keyword') keyword: string, @Param('sort') sort: string) {
+    const posts = await this.postService.searchByKeyword(keyword, sort);
 
     return Object.assign({
       statusCode: 200,
@@ -18,9 +18,9 @@ export class PostController {
     });
   }
 
-  @Get('/search/tag/:tag')
-  async searchByTag(@Param('tag') tag: string) {
-    const posts = await this.postService.searchByTag(tag);
+  @Get('/search/tag/:tag/:sort')
+  async searchByTag(@Param('tag') tag: string, @Param('sort') sort: string) {
+    const posts = await this.postService.searchByTag(tag, sort);
 
     return {
       statusCode: 200,
