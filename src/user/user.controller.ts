@@ -38,3 +38,13 @@ export class UserController {
       message: '유저 생성 성공',
     });
   }
+
+  @Delete('/')
+  async deleteAcc(@Headers('Authorization') token: string) {
+    await this.userService.deleteAcc(token);
+
+    return Object.assign({
+      statusCode: 204,
+    });
+  }
+}

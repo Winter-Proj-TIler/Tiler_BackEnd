@@ -56,6 +56,13 @@ export class UserService {
       email,
     });
   }
+
+  async deleteAcc(token: string) {
+    console.log(token);
+    const user = await this.validateAccess(token);
+    console.log(user);
+
+    await this.userEntity.delete({ userId: user.userId });
   }
 
   async createAccess(payload: UserPayloadDto): Promise<string> {
