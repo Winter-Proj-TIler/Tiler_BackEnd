@@ -17,3 +17,24 @@ export class UserController {
       data,
     });
   }
+
+  @Post('/refresh')
+  async validateRefresh(@Headers('Authorization') token: string) {
+    const tokens = await this.userService.validateRefresh(token);
+
+    return Object.assign({
+      status: 200,
+      message: '요청에 성공했습니다',
+      tokens,
+    });
+  }
+
+  @Post('/signup')
+  async signup(@Body() signupDto: SignupDto) {
+    await this.userService.signUp(signupDto);
+
+    return Object.assign({
+      statusCode: 201,
+      message: '유저 생성 성공',
+    });
+  }

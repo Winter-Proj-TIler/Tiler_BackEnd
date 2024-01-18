@@ -42,6 +42,22 @@ export class UserService {
     };
   }
 
+  async signUp(signUpDto: SignupDto) {
+    const { username, password, email } = signUpDto;
+
+    const thisUser = await this.userEntity.findOneBy([{ username }, { email }]);
+    if (thisUser) throw new ConflictException('이미 가입된 이메일주소 또는 닉네임');
+
+    const hashedPW = await bcrypt.hash(password, 10);
+
+    await this.userEntity.save({
+      username,
+      password: hashedPW,
+      email,
+    });
+  }
+  }
+
   async createAccess(payload: UserPayloadDto): Promise<string> {
     const accessToken = await this.jwt.sign(payload, {
       secret: process.env.JWT_SECRET_ACCESS,
