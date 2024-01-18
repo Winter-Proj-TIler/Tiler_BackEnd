@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
 import { UserService } from 'src/user/user.service';
-import { createPostDto } from './dto/createPost.dto';
+import { CreatePostDto } from './dto/createPost.dto';
+import { UpdatePostDto } from './dto/updatePost.dto';
 
 @Injectable()
 export class PostService {
@@ -13,7 +13,7 @@ export class PostService {
     private readonly userService: UserService,
   ) {}
 
-  async createPost(token: string, postDto: createPostDto) {
+  async createPost(token: string, postDto: CreatePostDto) {
     const { contents, tags, title } = postDto;
 
     const writed = await this.userService.validateAccess(token);
@@ -50,5 +50,21 @@ export class PostService {
       likeCnt: thisPost.likeCnt,
       createdAt: thisPost.createdAt,
     };
+  }
+
+  async updatePost(postId: number, token: string, postDto: UpdatePostDto) {
+    const { tags, title, contents } = postDto;
+
+    const decoded = await this.userService.validateAccess(token);
+    const thisPost = await this.postEntity.findOneBy({ postId });
+
+    if (!thisPost) throw new NotFoundException('존재하지 않는 계시물');
+    if (thisPost.userId !== decoded.userId) throw new ForbiddenException('권한 없는 유저');
+
+    await this.postEntity.update(postId, {
+      title,
+      contents,
+      tags: ',' + tags.join(',') + ',', // 태그로 검색시 구별하기 위해 구분자로 구분
+    });
   }
 }

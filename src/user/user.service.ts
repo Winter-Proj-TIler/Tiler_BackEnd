@@ -84,27 +84,37 @@ export class UserService {
   async validateAccess(token: string): Promise<UserPayloadDto> {
     token = token.split(' ')[1];
 
-    const data = await this.jwt.verify(token, {
-      secret: process.env.JWT_SECRET_ACCESS,
-    });
+    try {
+      const data = await this.jwt.verify(token, {
+        secret: process.env.JWT_SECRET_ACCESS,
+      });
 
-    if (!data) throw new UnauthorizedException('리프레시 토큰 검증해주세요');
+      if (!data) throw new UnauthorizedException('리프레시 토큰 검증해주세요');
 
-    return data;
+      return data;
+    } catch (err) {
+      console.error(err);
+      throw new UnauthorizedException('리프레시 토큰 검증 필요');
+    }
   }
 
   async validateRefresh(token: string): Promise<Object> {
     token = token.split(' ')[1];
 
-    const data = await this.jwt.verify(token, {
-      secret: process.env.JWT_SECRET_ACCESS,
-    });
+    try {
+      const data = await this.jwt.verify(token, {
+        secret: process.env.JWT_SECRET_ACCESS,
+      });
 
-    if (!data) throw new UnauthorizedException('재로그인 필요');
+      if (!data) throw new UnauthorizedException('재로그인 필요');
 
-    const accessToken = await this.createAccess(data);
-    const refreshToken = await this.createRefresh(data);
+      const accessToken = await this.createAccess(data);
+      const refreshToken = await this.createRefresh(data);
 
-    return { accessToken, refreshToken };
+      return { accessToken, refreshToken };
+    } catch (err) {
+      console.error(err);
+      throw new UnauthorizedException('재로그인 필요');
+    }
   }
 }
