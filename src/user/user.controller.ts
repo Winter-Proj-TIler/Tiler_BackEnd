@@ -92,3 +92,14 @@ export class UserController {
       message: '변경 성공',
     });
   }
+
+  @Get('/findPW')
+  async changePW(@Body() findPWDto: FindPW) {
+    await this.userService.changePW(findPWDto);
+
+    return Object.assign({
+      statusCode: 200,
+      message: '이메일이 전송되었습니다',
+    });
+  }
+}

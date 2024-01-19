@@ -105,6 +105,37 @@ export class UserService {
     await this.userEntity.update({ userId: decoded.userId }, { password: hashedPW });
   }
 
+  async changePW(userDto: FindPW) {
+    const { email } = userDto;
+
+    const thisUser = await this.userEntity.findOneBy({ email });
+    if (!thisUser) throw new NotFoundException('찾을 수 없는 유저');
+
+    const transporter = nodemailer.createTransport({
+      service: process.env.EMAIL_SERVICE,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PW,
+      },
+    });
+
+    const newPW = `${Math.floor(Math.random() * 89999 + 10000)}`;
+    const hashedPW = await bcrypt.hash(newPW, 10);
+
+    await this.userEntity.update({ userId: thisUser.userId }, { password: hashedPW });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: '비밀번호 재설정 안내',
+      html: `TILER 서비스의 비밀번호가 ${newPW}로 변경되었습니다.<br>
+      즉시 로그인하여 비밀번호를 변경해주세요`,
+    };
+
+    await transporter.sendMail(mailOptions);
+  }
+
+  // 토큰 관련 함수들
   async createAccess(payload: UserPayloadDto): Promise<string> {
     const accessToken = await this.jwt.sign(payload, {
       secret: process.env.JWT_SECRET_ACCESS,
