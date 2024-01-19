@@ -62,3 +62,13 @@ export class UserController {
       data,
     });
   }
+
+  @Patch('/update/info')
+  async updateInfo(@Headers('Authorization') token: string, @Body() updateInfoDto: UpdateInfoDto) {
+    await this.userService.updateInfo(token, updateInfoDto);
+
+    return Object.assign({
+      statusCode: 200,
+      statusMsg: '수정 성공',
+    });
+  }
