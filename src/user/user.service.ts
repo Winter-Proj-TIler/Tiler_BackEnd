@@ -96,6 +96,15 @@ export class UserService {
     await this.userEntity.update({ userId: decoded.userId }, { email });
   }
 
+  async updatePassword(token: string, userDto: UpdatePWDto) {
+    const { password } = userDto;
+    const decoded = await this.validateAccess(token);
+
+    const hashedPW = await bcrypt.hash(password, 10);
+
+    await this.userEntity.update({ userId: decoded.userId }, { password: hashedPW });
+  }
+
   async createAccess(payload: UserPayloadDto): Promise<string> {
     const accessToken = await this.jwt.sign(payload, {
       secret: process.env.JWT_SECRET_ACCESS,

@@ -82,3 +82,13 @@ export class UserController {
       message: '변경 성공',
     });
   }
+
+  @Patch('/update/password')
+  async updatePassword(@Headers('Authorization') token: string, @Body() updatePWDto: UpdatePWDto) {
+    await this.userService.updatePassword(token, updatePWDto);
+
+    return Object.assign({
+      statusCode: 200,
+      message: '변경 성공',
+    });
+  }
