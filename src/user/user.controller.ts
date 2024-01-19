@@ -72,3 +72,13 @@ export class UserController {
       statusMsg: '수정 성공',
     });
   }
+
+  @Patch('/update/email')
+  async updateEmail(@Headers('Authorization') token: string, @Body() updateEmailDto: UpdateEmailDto) {
+    await this.userService.updateEmail(token, updateEmailDto);
+
+    return Object.assign({
+      statusCode: 200,
+      message: '변경 성공',
+    });
+  }

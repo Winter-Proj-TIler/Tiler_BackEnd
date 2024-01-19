@@ -89,6 +89,13 @@ export class UserService {
     await this.userEntity.update({ userId: deocded.userId }, { statusMsg, username });
   }
 
+  async updateEmail(token: string, userDto: UpdateEmailDto) {
+    const { email } = userDto;
+    const decoded = await this.validateAccess(token);
+
+    await this.userEntity.update({ userId: decoded.userId }, { email });
+  }
+
   async createAccess(payload: UserPayloadDto): Promise<string> {
     const accessToken = await this.jwt.sign(payload, {
       secret: process.env.JWT_SECRET_ACCESS,
