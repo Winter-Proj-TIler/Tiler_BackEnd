@@ -4,17 +4,27 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
+import * as nodemailer from 'nodemailer';
 import { UserPayloadDto } from './dto/userPayload.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Redis } from 'ioredis';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { SignupDto } from './dto/signup.dto';
+import { FindPW } from './dto/findPW.dto';
+import { configDotenv } from 'dotenv';
+import { UpdatePWDto } from './dto/updatePW.dto';
+import { UpdateEmailDto } from './dto/updateEmail.dto';
+import { UpdateInfoDto } from './dto/updateInfo.dto';
+import { Post } from 'src/post/entities/post.entity';
+
+configDotenv();
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRedis() private readonly redis: Redis,
     @InjectRepository(User) private userEntity: Repository<User>,
+    @InjectRepository(Post) private postEntiiy: Repository<Post>,
     private jwt: JwtService,
   ) {}
 
@@ -61,6 +71,15 @@ export class UserService {
     const user = await this.validateAccess(token);
 
     await this.userEntity.delete({ userId: user.userId });
+  }
+
+  async getInfo(userId: number) {
+    const user = await this.userEntity.findOneBy({ userId });
+    if (!user) throw new NotFoundException('찾을 수 없는 유저');
+    delete user.password;
+
+    const posts = await this.postEntiiy.find({ where: { userId } });
+    return { user, posts };
   }
 
   async createAccess(payload: UserPayloadDto): Promise<string> {

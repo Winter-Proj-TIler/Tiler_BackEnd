@@ -1,7 +1,11 @@
-import { Body, Controller, Delete, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
+import { FindPW } from './dto/findPW.dto';
+import { UpdatePWDto } from './dto/updatePW.dto';
+import { UpdateEmailDto } from './dto/updateEmail.dto';
+import { UpdateInfoDto } from './dto/updateInfo.dto';
 
 @Controller('user')
 export class UserController {
@@ -47,4 +51,14 @@ export class UserController {
       statusCode: 204,
     });
   }
-}
+
+  @Get('/info/:userId')
+  async getInfo(@Param('userId') userId: number) {
+    const data = await this.userService.getInfo(userId);
+
+    return Object.assign({
+      statusCode: 200,
+      message: '조회에 성공했스므니다',
+      data,
+    });
+  }
