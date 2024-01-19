@@ -17,14 +17,24 @@ export class PostService {
     const posts = await this.postEntity.find({ where: [{ title: Like(`%${keyword}%`) }, { contents: Like(`%${keyword}%`) }] });
     if (sort == 'DESC') posts.reverse();
 
-    return posts;
+    const result = posts.map((post) => ({
+      ...post,
+      tags: post.tags.split(',').filter((tag) => tag != ''),
+    }));
+
+    return result;
   }
 
   async searchByTag(tag: string, sort: string) {
     const posts = await this.postEntity.find({ where: { tags: Like(`%,${tag},%`) } });
     if (sort == 'DESC') posts.reverse();
 
-    return posts;
+    const result = posts.map((post) => ({
+      ...post,
+      tags: post.tags.split(',').filter((tag) => tag != ''),
+    }));
+
+    return result;
   }
 
   async createPost(token: string, postDto: CreatePostDto) {
