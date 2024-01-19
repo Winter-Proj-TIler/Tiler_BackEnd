@@ -34,7 +34,7 @@ export class UserService {
     const thisUser = await this.userEntity.findOneBy({ username });
     if (!thisUser) throw new NotFoundException('존재하지 않는 유저');
 
-    const isMatch = bcrypt.compare(password, thisUser.password);
+    const isMatch = await bcrypt.compare(password, thisUser.password);
     if (!isMatch) throw new ForbiddenException('비밀번호가 맞지 않음');
 
     const payload = { userId: thisUser.userId, username };
