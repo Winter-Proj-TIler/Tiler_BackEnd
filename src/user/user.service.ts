@@ -24,7 +24,7 @@ export class UserService {
   constructor(
     @InjectRedis() private readonly redis: Redis,
     @InjectRepository(User) private userEntity: Repository<User>,
-    @InjectRepository(Post) private postEntiiy: Repository<Post>,
+    @InjectRepository(Post) private postEntity: Repository<Post>,
     private jwt: JwtService,
   ) {}
 
@@ -78,8 +78,14 @@ export class UserService {
     if (!user) throw new NotFoundException('찾을 수 없는 유저');
     delete user.password;
 
-    const posts = await this.postEntiiy.find({ where: { userId } });
-    return { user, posts };
+    const posts = await this.postEntity.findBy({ userId });
+
+    const result = posts.map((post) => ({
+      ...post,
+      tags: post.tags.split(',').filter((tag) => tag != ''),
+    }));
+
+    return { user, posts: result };
   }
 
   async updateInfo(token: string, userDto: UpdateInfoDto) {

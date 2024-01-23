@@ -63,16 +63,8 @@ export class PostService {
     const tags = thisPost.tags.split(',').filter((a) => a !== '');
 
     return {
-      postId,
-      userId: thisPost.userId,
-      title: thisPost.title,
-      contents: thisPost.contents,
-      writer: thisPost.writer,
-      mainImg: thisPost.mainImg,
+      ...thisPost,
       tags,
-      commentCnt: thisPost.commentCnt,
-      likeCnt: thisPost.likeCnt,
-      createdAt: thisPost.createdAt,
     };
   }
 

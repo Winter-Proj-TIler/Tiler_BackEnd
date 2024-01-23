@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { configDotenv } from 'dotenv';
 import { PostModule } from './post/post.module';
+import { LikeModule } from './like/like.module';
+import { FollowModule } from './follow/follow.module';
 
 configDotenv();
 
@@ -32,6 +34,8 @@ configDotenv();
     }),
     UserModule,
     PostModule,
+    LikeModule,
+    FollowModule,
   ],
   controllers: [],
   providers: [],
