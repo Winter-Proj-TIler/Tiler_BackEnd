@@ -17,12 +17,6 @@ export class User {
   @Column({ length: 50, nullable: false, unique: true })
   email: string;
 
-  @Column({ nullable: false, default: 0 })
-  following: number;
-
-  @Column({ nullable: false, default: 0 })
-  followers: number;
-
   @Column({ length: 50, nullable: true })
   statusMsg: string;
 

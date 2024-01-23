@@ -29,12 +29,6 @@ export class Post {
   @Column({ nullable: false, default: '' })
   tags: string;
 
-  @Column({ type: 'int', nullable: false, default: 0 })
-  commentCnt: number;
-
-  @Column({ type: 'int', nullable: false, default: 0 })
-  likeCnt: number;
-
   @Column({ nullable: false })
   createdAt: string;
 }
