@@ -19,10 +19,13 @@ export class PostService {
     const posts = await this.postEntity.find({ where: [{ title: Like(`%${keyword}%`) }, { contents: Like(`%${keyword}%`) }] });
     if (sort == 'DESC') posts.reverse();
 
-    const result = posts.map((post) => ({
-      ...post,
-      tags: post.tags.split(',').filter((tag) => tag != ''),
-    }));
+    const result = await Promise.all(
+      posts.map(async (post) => ({
+        ...post,
+        tags: post.tags.split(',').filter((tag) => tag != ''),
+        likeCnt: await this.likeEntity.count({ where: { postId: post.postId } }),
+      })),
+    );
 
     return result;
   }
@@ -31,10 +34,27 @@ export class PostService {
     const posts = await this.postEntity.find({ where: { tags: Like(`%,${tag},%`) } });
     if (sort == 'DESC') posts.reverse();
 
-    const result = posts.map((post) => ({
-      ...post,
-      tags: post.tags.split(',').filter((tag) => tag != ''),
-    }));
+    const result = await Promise.all(
+      posts.map(async (post) => ({
+        ...post,
+        tags: post.tags.split(',').filter((tag) => tag != ''),
+        likeCnt: await this.likeEntity.count({ where: { postId: post.postId } }),
+      })),
+    );
+
+    return result;
+  }
+
+  async searchByUserId(userId: number) {
+    const posts = await this.postEntity.findBy({ userId });
+
+    const result = await Promise.all(
+      posts.map(async (post) => ({
+        ...post,
+        tags: post.tags.split(',').filter((tag) => tag != ''),
+        likeCnt: await this.likeEntity.count({ where: { postId: post.postId } }),
+      })),
+    );
 
     return result;
   }

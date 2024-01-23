@@ -79,14 +79,9 @@ export class UserService {
     if (!user) throw new NotFoundException('찾을 수 없는 유저');
     delete user.password;
 
-    const posts = await this.postEntity.findBy({ userId });
+    const posts = await this.postService.searchByUserId(userId);
 
-    const result = posts.map((post) => ({
-      ...post,
-      tags: post.tags.split(',').filter((tag) => tag != ''),
-    }));
-
-    return { user, posts: result };
+    return { user, posts };
   }
 
   async updateInfo(token: string, userDto: UpdateInfoDto) {
