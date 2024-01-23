@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Inject, Injectable, NotFoundException, UnauthorizedException, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -16,6 +16,7 @@ import { UpdatePWDto } from './dto/updatePW.dto';
 import { UpdateEmailDto } from './dto/updateEmail.dto';
 import { UpdateInfoDto } from './dto/updateInfo.dto';
 import { Post } from 'src/post/entities/post.entity';
+import { PostService } from 'src/post/post.service';
 
 configDotenv();
 
@@ -24,7 +25,7 @@ export class UserService {
   constructor(
     @InjectRedis() private readonly redis: Redis,
     @InjectRepository(User) private userEntity: Repository<User>,
-    @InjectRepository(Post) private postEntity: Repository<Post>,
+    @Inject(forwardRef(() => PostService)) private postService: PostService,
     private jwt: JwtService,
   ) {}
 

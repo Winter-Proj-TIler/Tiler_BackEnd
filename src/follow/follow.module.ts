@@ -7,14 +7,16 @@ import { JwtModule } from '@nestjs/jwt';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Post } from 'src/post/entities/post.entity';
+import { PostService } from 'src/post/post.service';
+import { PostLike } from 'src/like/entities/like.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Post, Follow]),
+    TypeOrmModule.forFeature([User, Post, Follow, PostLike]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: {
-        expiresIn: '4h',
+        expiresIn: '3h',
       },
       verifyOptions: {
         complete: false,
@@ -22,6 +24,6 @@ import { Post } from 'src/post/entities/post.entity';
     }),
   ],
   controllers: [FollowController],
-  providers: [FollowService, UserService],
+  providers: [FollowService, UserService, PostService],
 })
 export class FollowModule {}

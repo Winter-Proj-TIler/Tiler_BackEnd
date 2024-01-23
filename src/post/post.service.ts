@@ -1,7 +1,8 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
+import { PostLike } from 'src/like/entities/like.entity';
 import { UserService } from 'src/user/user.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
@@ -10,7 +11,8 @@ import { UpdatePostDto } from './dto/updatePost.dto';
 export class PostService {
   constructor(
     @InjectRepository(Post) private postEntity: Repository<Post>,
-    private readonly userService: UserService,
+    @InjectRepository(PostLike) private likeEntity: Repository<PostLike>,
+    @Inject(forwardRef(() => UserService)) private readonly userService: UserService,
   ) {}
 
   async searchByKeyword(keyword: string, sort: string) {

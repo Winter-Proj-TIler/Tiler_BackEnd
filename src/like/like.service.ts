@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like } from './entities/like.entity';
+import { PostLike } from './entities/like.entity';
 import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import { Post } from 'src/post/entities/post.entity';
@@ -8,7 +8,7 @@ import { Post } from 'src/post/entities/post.entity';
 @Injectable()
 export class LikeService {
   constructor(
-    @InjectRepository(Like) private likeEntity: Repository<Like>,
+    @InjectRepository(PostLike) private likeEntity: Repository<PostLike>,
     @InjectRepository(Post) private postEntity: Repository<Post>,
     private readonly userService: UserService,
   ) {}

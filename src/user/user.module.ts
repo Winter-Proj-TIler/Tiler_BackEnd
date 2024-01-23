@@ -6,10 +6,11 @@ import { User } from './entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { Post } from 'src/post/entities/post.entity';
 import { PostService } from 'src/post/post.service';
+import { PostLike } from 'src/like/entities/like.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Post, User]),
+    TypeOrmModule.forFeature([Post, User, PostLike]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: {
@@ -21,6 +22,6 @@ import { PostService } from 'src/post/post.service';
     }),
   ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, PostService],
 })
 export class UserModule {}
