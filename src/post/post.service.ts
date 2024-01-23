@@ -83,10 +83,12 @@ export class PostService {
     if (!thisPost) throw new NotFoundException('존재하지 않는 게시물');
 
     const tags = thisPost.tags.split(',').filter((a) => a !== '');
+    const likeCnt = await this.likeEntity.count({ where: { postId } });
 
     return {
       ...thisPost,
       tags,
+      likeCnt,
     };
   }
 
