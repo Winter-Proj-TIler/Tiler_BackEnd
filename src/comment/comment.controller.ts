@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Headers, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Headers, Param, Patch, Post } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/createComment.dto';
 import { UpdateCommentDto } from './dto/updateComment.dto';
@@ -26,9 +26,10 @@ export class CommentController {
       message: '',
     });
   }
-  @Post('/:commentId')
+
+  @Patch('/:commentId')
   async updateComment(@Param('commentId') commentId: number, @Headers('Authorization') token: string, @Body() updateCommentDto: UpdateCommentDto) {
-    await this.commentService.createComment(commentId, token, updateCommentDto);
+    await this.commentService.updateComment(commentId, token, updateCommentDto);
 
     return Object.assign({
       stalusCode: 200,

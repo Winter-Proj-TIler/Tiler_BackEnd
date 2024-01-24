@@ -58,6 +58,6 @@ export class CommentService {
     // 만약 로그인 된 유저와 댓글을 작성한 유저가 다를시
     if (comment.userId != userId) throw new ForbiddenException('권한 없는 유저');
 
-    await this.commentEntity.update({ commentId }, { contents });
+    await this.commentEntity.update(commentId, { contents });
   }
 }
