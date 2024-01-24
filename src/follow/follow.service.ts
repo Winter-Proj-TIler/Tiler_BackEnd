@@ -57,7 +57,6 @@ export class FollowService {
 
     // 데이터 기반으로 리스트를 찾고, follower만 리턴할 수 있도록 데이터 가공
     const followingList = await this.followEntity.findBy({ follower: user.userId });
-    console.log(followingList);
     const result = await Promise.all(
       followingList.map(async (followData) => {
         const followingUser = await this.userEntity.findOneBy({ userId: followData.follower });
