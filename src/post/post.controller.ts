@@ -41,12 +41,12 @@ export class PostController {
 
   @Get('/:postId')
   async getPost(@Param('postId') postId: number) {
-    const post = await this.postService.getPost(Number(postId));
+    const data = await this.postService.getPost(Number(postId));
 
     return Object.assign({
       statusCode: 200,
       message: '조회 성공',
-      post,
+      data,
     });
   }
 

@@ -8,10 +8,11 @@ import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Post } from 'src/post/entities/post.entity';
 import { PostService } from 'src/post/post.service';
+import { Comment } from 'src/comment/entities/comment.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Post, PostLike]),
+    TypeOrmModule.forFeature([User, Post, PostLike, Comment]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: {

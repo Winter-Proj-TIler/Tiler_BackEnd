@@ -6,6 +6,7 @@ import { configDotenv } from 'dotenv';
 import { PostModule } from './post/post.module';
 import { LikeModule } from './like/like.module';
 import { FollowModule } from './follow/follow.module';
+import { CommentModule } from './comment/comment.module';
 
 configDotenv();
 
@@ -36,6 +37,7 @@ configDotenv();
     PostModule,
     LikeModule,
     FollowModule,
+    CommentModule,
   ],
   controllers: [],
   providers: [],

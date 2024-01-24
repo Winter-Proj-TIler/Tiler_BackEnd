@@ -6,12 +6,14 @@ import { PostLike } from 'src/like/entities/like.entity';
 import { UserService } from 'src/user/user.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
+import { Comment } from 'src/comment/entities/comment.entity';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post) private postEntity: Repository<Post>,
     @InjectRepository(PostLike) private likeEntity: Repository<PostLike>,
+    @InjectRepository(Comment) private commentEntity: Repository<Comment>,
     @Inject(forwardRef(() => UserService)) private readonly userService: UserService,
   ) {}
 
@@ -84,12 +86,16 @@ export class PostService {
 
     const tags = thisPost.tags.split(',').filter((a) => a !== '');
     const likeCnt = await this.likeEntity.count({ where: { postId } });
+    const comments = await this.commentEntity.findBy({ postId });
 
-    return {
+    const post = {
       ...thisPost,
       tags,
       likeCnt,
+      commentCnt: comments.length,
     };
+
+    return { post, comments };
   }
 
   async updatePost(postId: number, token: string, postDto: UpdatePostDto) {

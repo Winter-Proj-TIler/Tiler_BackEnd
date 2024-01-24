@@ -7,10 +7,11 @@ import { User } from 'src/user/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { Post } from './entities/post.entity';
 import { PostLike } from 'src/like/entities/like.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Post, PostLike]),
+    TypeOrmModule.forFeature([User, Post, PostLike, Comment]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: {
