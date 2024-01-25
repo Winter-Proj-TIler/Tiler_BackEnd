@@ -25,10 +25,10 @@ export class FollowService {
     if (!following) throw new NotFoundException('존재하지 않는 유저에게 팔로우 시도');
 
     // 해당 팔로우 데이터가 이미 존재할 시
-    const followData = await this.followEntity.findOneBy({ follower: follower.userId, following: following.userId });
+    const followData = await this.followEntity.findOneBy({ followerId: follower.userId, followingId: following.userId });
     if (followData) throw new ConflictException('이미 존재하는 팔로우 관계');
 
-    await this.followEntity.save({ follower: follower.userId, following: following.userId });
+    await this.followEntity.save({ followerId: follower.userId, followingId: following.userId });
   }
 
   async unFollow(userId: number, token: string) {
@@ -43,12 +43,12 @@ export class FollowService {
     if (!following) throw new NotFoundException('존재하지 않는 유저');
 
     // 팔로우 데이터 검색
-    const followData = await this.followEntity.findOneBy({ follower: follower.userId, following: following.userId });
+    const followData = await this.followEntity.findOneBy({ followerId: follower.userId, followingId: following.userId });
 
     // 만약 해당 팔로우 데이터가 존재하지 않는다면
     if (!followData) throw new NotFoundException('존재하지 않는 팔로우 데이터');
 
-    await this.followEntity.delete({ follower: follower.userId, following: following.userId });
+    await this.followEntity.delete({ followerId: follower.userId, followingId: following.userId });
   }
 
   async getFollowList(token: string) {
@@ -56,10 +56,10 @@ export class FollowService {
     const user = await this.userEntity.findOneBy({ userId });
 
     // 데이터 기반으로 리스트를 찾고, follower만 리턴할 수 있도록 데이터 가공
-    const followingList = await this.followEntity.findBy({ follower: user.userId });
+    const followingList = await this.followEntity.findBy({ followerId: user.userId });
     const result = await Promise.all(
       followingList.map(async (followData) => {
-        const followingUser = await this.userEntity.findOneBy({ userId: followData.follower });
+        const followingUser = await this.userEntity.findOneBy({ userId: followData.followerId });
         delete followingUser.password;
         return followingUser;
       }),
