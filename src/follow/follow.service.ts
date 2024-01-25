@@ -59,7 +59,7 @@ export class FollowService {
     const followingList = await this.followEntity.findBy({ followerId: user.userId });
     const result = await Promise.all(
       followingList.map(async (followData) => {
-        const followingUser = await this.userEntity.findOneBy({ userId: followData.followerId });
+        const followingUser = await this.userEntity.findOneBy({ userId: followData.followingId });
         delete followingUser.password;
         return followingUser;
       }),

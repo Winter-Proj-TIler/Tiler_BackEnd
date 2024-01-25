@@ -6,9 +6,11 @@ export class Follow {
   @PrimaryGeneratedColumn()
   followId: number;
 
+  @Column()
   @RelationId((follow: Follow) => follow.follower)
   followerId: number;
 
+  @Column()
   @RelationId((follow: Follow) => follow.following)
   followingId: number;
 

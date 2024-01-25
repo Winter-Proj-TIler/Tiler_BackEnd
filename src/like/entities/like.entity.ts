@@ -1,15 +1,17 @@
 import { Post } from 'src/post/entities/post.entity';
 import { User } from 'src/user/entities/user.entity';
-import { Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, RelationId } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, RelationId } from 'typeorm';
 
 @Entity()
 export class PostLike {
   @PrimaryGeneratedColumn()
   likeId: number;
 
+  @Column()
   @RelationId((like: PostLike) => like.user)
   userId: number;
 
+  @Column()
   @RelationId((like: PostLike) => like.post)
   postId: number;
 

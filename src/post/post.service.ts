@@ -25,7 +25,8 @@ export class PostService {
       posts.map(async (post) => ({
         ...post,
         tags: post.tags.split(',').filter((tag) => tag != ''),
-        likeCnt: await this.likeEntity.count({ where: { post: { postId: post.postId } } }),
+        likeCnt: await this.likeEntity.count({ where: { postId: post.postId } }),
+        commentCnt: await this.commentEntity.count({ where: { postId: post.postId } }),
       })),
     );
 
@@ -40,7 +41,8 @@ export class PostService {
       posts.map(async (post) => ({
         ...post,
         tags: post.tags.split(',').filter((tag) => tag != ''),
-        likeCnt: await this.likeEntity.count({ where: { post: { postId: post.postId } } }),
+        likeCnt: await this.likeEntity.count({ where: { postId: post.postId } }),
+        commentCnt: await this.commentEntity.count({ where: { postId: post.postId } }),
       })),
     );
 
@@ -54,7 +56,8 @@ export class PostService {
       posts.map(async (post) => ({
         ...post,
         tags: post.tags.split(',').filter((tag) => tag != ''),
-        likeCnt: await this.likeEntity.count({ where: { post: { postId: post.postId } } }),
+        likeCnt: await this.likeEntity.count({ where: { postId: post.postId } }),
+        commentCnt: await this.commentEntity.count({ where: { postId: post.postId } }),
       })),
     );
 
