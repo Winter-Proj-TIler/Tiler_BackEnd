@@ -7,6 +7,7 @@ import { PostModule } from './post/post.module';
 import { LikeModule } from './like/like.module';
 import { FollowModule } from './follow/follow.module';
 import { CommentModule } from './comment/comment.module';
+import { AuthModule } from './auth/auth.module';
 
 configDotenv();
 
@@ -21,7 +22,7 @@ configDotenv();
       database: process.env.DB_NAME,
       entities: [__dirname + './**/entities/*.ts'],
       timezone: 'Asia/Seoul',
-      synchronize: true,
+      synchronize: false,
       logging: false,
       autoLoadEntities: true,
     }),
@@ -38,6 +39,7 @@ configDotenv();
     LikeModule,
     FollowModule,
     CommentModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
