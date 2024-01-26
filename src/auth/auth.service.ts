@@ -24,8 +24,9 @@ export class AuthService {
       // 만약 해당 이메일로 가입된 유저가 없다면 생성하기
       const signupDto: SignupDto = {
         email: req.user.email,
-        password: 'ESAFKHJK3wasd3123Hdskhsfjq34978',
+        password: process.env.GOOGLE_LOGIN_PW,
         username: req.user.lastName,
+        profile: req.user.picture,
       };
       await this.userService.signUp(signupDto);
     } else {
@@ -79,7 +80,13 @@ export class AuthService {
 
     // 만약 해당 이메일로 된 계정이 없다면 생성하기
     if (!user) {
-      await this.userService.signUp({ email: data.email, password: 'SKAHD01jhkfa1&&8adj2', username: data.login });
+      const signupDto: SignupDto = {
+        email: data.email,
+        password: process.env.GITHUB_LOGIN_PW,
+        username: data.login,
+        profile: data.avatar_url,
+      };
+      await this.userService.signUp(signupDto);
     } else {
       // 만약 비밀번호가 다르다면? -> 이미 해당 이메일로 회원가입이 되어있는 유저가 존재
       const isMatch = await bcrypt.compare(process.env.GITHUB_LOGIN_PW, user.password);

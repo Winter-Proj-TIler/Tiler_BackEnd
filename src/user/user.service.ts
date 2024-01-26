@@ -53,7 +53,7 @@ export class UserService {
   }
 
   async signUp(signUpDto: SignupDto) {
-    const { username, password, email } = signUpDto;
+    const { username, password, email, profile } = signUpDto;
 
     const thisUser = await this.userEntity.findOneBy([{ username }, { email }]);
     if (thisUser) throw new ConflictException('이미 가입된 이메일주소 또는 닉네임');
@@ -64,6 +64,7 @@ export class UserService {
       username,
       password: hashedPW,
       email,
+      profileImg: profile,
     });
   }
 
