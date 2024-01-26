@@ -30,12 +30,12 @@ export class AuthService {
       await this.userService.signUp(signupDto);
     } else {
       // 만약 비밀번호가 다르다면? -> 이미 해당 이메일로 회원가입이 되어있는 유저가 존재
-      const isMatch = await bcrypt.compare('ESAFKHJK3wasd3123Hdskhsfjq34978', user.password);
+      const isMatch = await bcrypt.compare(process.env.GOOGLE_LOGIN_PW, user.password);
       if (!isMatch) throw new ConflictException('이미 해당 이메일로 가입된 유저가 존재합니다.');
     }
 
     // 로그인 실시
-    const loginData = await this.userService.login({ email: req.user.email, password: 'ESAFKHJK3wasd3123Hdskhsfjq34978' });
+    const loginData = await this.userService.login({ email: req.user.email, password: process.env.GOOGLE_LOGIN_PW });
 
     return loginData;
   }
@@ -82,12 +82,12 @@ export class AuthService {
       await this.userService.signUp({ email: data.email, password: 'SKAHD01jhkfa1&&8adj2', username: data.login });
     } else {
       // 만약 비밀번호가 다르다면? -> 이미 해당 이메일로 회원가입이 되어있는 유저가 존재
-      const isMatch = await bcrypt.compare('SKAHD01jhkfa1&&8adj2', user.password);
+      const isMatch = await bcrypt.compare(process.env.GITHUB_LOGIN_PW, user.password);
       if (!isMatch) throw new ConflictException('이미 해당 이메일로 가입된 유저가 존재합니다.');
     }
 
     // 로그인 로직 실행
-    const loginData = await this.userService.login({ email: data.email, password: 'SKAHD01jhkfa1&&8adj2' });
+    const loginData = await this.userService.login({ email: data.email, password: process.env.GITHUB_LOGIN_PW });
 
     return loginData;
   }
