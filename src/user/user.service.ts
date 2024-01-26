@@ -15,7 +15,6 @@ import { configDotenv } from 'dotenv';
 import { UpdatePWDto } from './dto/updatePW.dto';
 import { UpdateEmailDto } from './dto/updateEmail.dto';
 import { UpdateInfoDto } from './dto/updateInfo.dto';
-import { Post } from 'src/post/entities/post.entity';
 import { PostService } from 'src/post/post.service';
 
 configDotenv();
@@ -30,15 +29,15 @@ export class UserService {
   ) {}
 
   async login(loginDto: LoginDto): Promise<Object> {
-    const { username, password } = loginDto;
+    const { email, password } = loginDto;
 
-    const thisUser = await this.userEntity.findOneBy({ username });
+    const thisUser = await this.userEntity.findOneBy({ email });
     if (!thisUser) throw new NotFoundException('존재하지 않는 유저');
 
     const isMatch = await bcrypt.compare(password, thisUser.password);
     if (!isMatch) throw new ForbiddenException('비밀번호가 맞지 않음');
 
-    const payload = { userId: thisUser.userId, username };
+    const payload = { userId: thisUser.userId, username: thisUser.username };
     const accessToken = await this.createAccess(payload);
     const refreshToken = await this.createRefresh(payload);
 
