@@ -80,6 +80,10 @@ export class PostService {
     const today = new Date();
     const now = today.toLocaleString();
 
+    // 대표사진 찾기
+    const regxp = new RegExp('https?://\\S+.(png|jpg)');
+    const picture = regxp.exec(contents);
+
     await this.postEntity.save({
       userId: writed.userId,
       title,
@@ -87,6 +91,7 @@ export class PostService {
       writer: writed.username,
       tags: ',' + tags.join(',') + ',', // 태그 검색시 like로 검색하기 위한 처리
       createdAt: now,
+      mainImg: picture != null ? picture[0] : null,
     });
   }
 
