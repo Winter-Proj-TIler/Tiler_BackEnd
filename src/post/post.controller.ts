@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('post')
 export class PostController {
@@ -67,6 +68,18 @@ export class PostController {
     return Object.assign({
       statusCode: 204,
       message: '',
+    });
+  }
+
+  @Post('/img')
+  @UseInterceptors(FileInterceptor('IMG'))
+  async uploadImg(@UploadedFile() file: Express.Multer.File) {
+    const url = await this.postService.uploadImg(file);
+
+    return Object.assign({
+      statusCode: 200,
+      message: '요청에 성공했습니다',
+      url,
     });
   }
 }

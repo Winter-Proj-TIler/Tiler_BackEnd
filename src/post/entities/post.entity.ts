@@ -24,7 +24,7 @@ export class Post {
   @Column({ type: 'varchar', length: 30, nullable: false })
   writer: string;
 
-  @Column({ nullable: false, default: process.env.DEFULT_POST_BANNER_URL })
+  @Column({ nullable: true })
   mainImg: string;
 
   @Column({ nullable: false, default: '' })

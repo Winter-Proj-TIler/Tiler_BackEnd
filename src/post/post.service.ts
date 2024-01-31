@@ -7,6 +7,7 @@ import { UserService } from 'src/user/user.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
 import { Comment } from 'src/comment/entities/comment.entity';
+import * as AWS from 'aws-sdk';
 
 @Injectable()
 export class PostService {
@@ -16,6 +17,12 @@ export class PostService {
     @InjectRepository(Comment) private commentEntity: Repository<Comment>,
     @Inject(forwardRef(() => UserService)) private readonly userService: UserService,
   ) {}
+  s3 = new AWS.S3({
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY,
+      secretAccessKey: process.env.AWS_SECRET_KEY,
+    },
+  });
 
   async searchByKeyword(keyword: string, sort: string) {
     const posts = await this.postEntity.find({ where: [{ title: Like(`%${keyword}%`) }, { contents: Like(`%${keyword}%`) }] });
@@ -125,5 +132,18 @@ export class PostService {
     if (thisPost.userId !== decoded.userId) throw new ForbiddenException('권한 없는 유저');
 
     await this.postEntity.delete({ postId });
+  }
+
+  async uploadImg(file: Express.Multer.File) {
+    const param = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: String(Date.now() + file.originalname),
+      Body: file.buffer,
+      ACL: 'public-read',
+    };
+
+    const data = await this.s3.upload(param).promise();
+
+    return data.Location;
   }
 }
