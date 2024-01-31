@@ -1,10 +1,11 @@
-import { ConflictException, ForbiddenException, Inject, Injectable, NotFoundException, UnauthorizedException, forwardRef } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Inject, Injectable, NotFoundException, UnauthorizedException, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import * as nodemailer from 'nodemailer';
+import * as AWS from 'aws-sdk';
 import { UserPayloadDto } from './dto/userPayload.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Redis } from 'ioredis';
@@ -27,6 +28,12 @@ export class UserService {
     @Inject(forwardRef(() => PostService)) private postService: PostService,
     private jwt: JwtService,
   ) {}
+  s3 = new AWS.S3({
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY,
+      secretAccessKey: process.env.AWS_SECRET_KEY,
+    },
+  });
 
   async login(loginDto: LoginDto): Promise<Object> {
     const { email, password } = loginDto;
@@ -135,6 +142,38 @@ export class UserService {
     };
 
     await transporter.sendMail(mailOptions);
+  }
+
+  // 프로필 이미지 관련 기능들
+  async uploadProfile(token: string, profile: Express.Multer.File) {
+    const { userId } = await this.validateAccess(token);
+
+    const params = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: String(Date.now() + profile.originalname),
+      Body: profile.buffer,
+      ACL: 'public-read',
+    };
+
+    let profileUrl: string;
+
+    try {
+      const respnse = await this.s3.upload(params).promise();
+      profileUrl = respnse.Location;
+    } catch (err) {
+      console.error(err);
+      throw new BadRequestException('사진 업로드 실패');
+    }
+
+    await this.userEntity.update({ userId }, { profileImg: profileUrl });
+
+    return profileUrl;
+  }
+
+  async toBasicProfile(token: string) {
+    const { userId } = await this.validateAccess(token);
+
+    await this.userEntity.update({ userId }, { profileImg: process.env.DEFAULT_PROFILE_URL });
   }
 
   // 토큰 관련 함수들

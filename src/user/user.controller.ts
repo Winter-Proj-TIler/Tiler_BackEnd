@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Headers, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
@@ -6,6 +6,7 @@ import { FindPW } from './dto/findPW.dto';
 import { UpdatePWDto } from './dto/updatePW.dto';
 import { UpdateEmailDto } from './dto/updateEmail.dto';
 import { UpdateInfoDto } from './dto/updateInfo.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 export class UserController {
@@ -101,5 +102,27 @@ export class UserController {
       statusCode: 200,
       message: '이메일이 전송되었습니다',
     });
+  }
+
+  @Patch('/profile')
+  @UseInterceptors(FileInterceptor('profile'))
+  async uploadProfile(@Headers('Authorization') token: string, @UploadedFile() profile: Express.Multer.File) {
+    const url = await this.userService.uploadProfile(token, profile);
+
+    return {
+      url,
+      statusCode: 200,
+      statusMsg: '파일 업로드 성공',
+    };
+  }
+
+  @Patch('/profile/basic')
+  async toBasicProfile(@Headers('Authorization') token: string) {
+    await this.userService.toBasicProfile(token);
+
+    return {
+      statusCode: 200,
+      statusMsg: '기본 이미지 전환 성공',
+    };
   }
 }
