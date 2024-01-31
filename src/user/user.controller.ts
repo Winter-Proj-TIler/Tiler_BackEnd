@@ -23,6 +23,16 @@ export class UserController {
     });
   }
 
+  @Post('/logout')
+  async logout(@Headers('Authorization') token: string) {
+    await this.userService.logOut(token);
+
+    return Object.assign({
+      statusCode: 200,
+      message: '로그아웃 성공',
+    });
+  }
+
   @Post('/refresh')
   async validateRefresh(@Headers('Authorization') token: string) {
     const tokens = await this.userService.validateRefresh(token);

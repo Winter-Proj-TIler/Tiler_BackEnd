@@ -59,6 +59,13 @@ export class UserService {
     };
   }
 
+  async logOut(token: string) {
+    const { userId } = await this.validateAccess(token);
+
+    await this.redis.del(`${userId}Access`);
+    await this.redis.del(`${userId}Refresh`);
+  }
+
   async signUp(signUpDto: SignupDto) {
     const { username, password, email, profile } = signUpDto;
 
@@ -204,6 +211,9 @@ export class UserService {
       });
 
       if (!data) throw new UnauthorizedException('리프레시 토큰 검증해주세요');
+
+      const redisAccess = await this.redis.get(`${data.userId}Access`);
+      if (!redisAccess || redisAccess != token) throw new UnauthorizedException('로그아웃된 토큰');
 
       return data;
     } catch (err) {
