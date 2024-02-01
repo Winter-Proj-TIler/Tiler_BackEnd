@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  redis:
+    image: redis
+    container_name: tiler_redis
+    ports:
+      - '6379:6379'
+    networks:
+      - tiler_network
+
+  tiler:
+    image: tiler
+    container_name: tiler
+    ports:
+      - '3000:3000'
+    depends_on:
+      - redis
+    networks:
+      - tiler_network
+
+networks:
+  tiler_network:
+    external: true
