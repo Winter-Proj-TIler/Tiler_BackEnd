@@ -10,7 +10,7 @@ services:
       - tiler_network
 
   tiler:
-    image: tiler
+    image: devsongju/tiler
     container_name: tiler
     ports:
       - '3000:3000'
